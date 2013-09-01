@@ -37,6 +37,7 @@ local.properties
 .idea
 *.iml
 *.iws
+*.ipr
 
 ##############
 # Sublime Text 2
