@@ -1,3 +1,8 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 /****************************************************************************
  *  Compilation:  javac WeightedQuickUnionUF.java
  *  Execution:  java WeightedQuickUnionUF < input.txt
@@ -69,7 +74,13 @@ public class WeightedQuickUnionUF {
             StdOut.println(p + " " + q);
         }
         StdOut.println(uf.count() + " components");
+        uf.printIds();
     }
 
+    private void printIds() {
+        for (int i : id) {
+            StdOut.print(i + " ");
+        }
+    }
 }
 

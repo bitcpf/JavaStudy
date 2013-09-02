@@ -58,6 +58,13 @@ public class QuickFindUF {
             StdOut.println(p + " " + q);
         }
         StdOut.println(uf.count() + " components");
+        uf.printIds();
+    }
+
+    private void printIds() {
+        for (int i : id) {
+            StdOut.print(i + " ");
+        }
     }
 
 }
