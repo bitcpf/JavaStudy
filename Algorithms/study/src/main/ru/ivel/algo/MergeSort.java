@@ -1,5 +1,7 @@
 package ru.ivel.algo;
 
+import java.util.Arrays;
+
 /**
  * MergeSort
  *
@@ -18,6 +20,17 @@ public class MergeSort {
         mergesort(0, number - 1);
     }
 
+    public void itersort(int[] values) {
+        this.numbers = values;
+        number = values.length;
+        this.helper = new int[number];
+        for (int sz = 1; sz < number; sz = sz*2) {
+            for (int lo = 0; lo < number - sz; lo += sz*2) {
+                merge(lo, lo + sz - 1, Math.min(lo + sz * 2 - 1, number - 1));
+            }
+        }
+    }
+    
     private void mergesort(int low, int high) {
         // Check if low is smaller then high, if not then the array is sorted
         if (low < high) {
@@ -60,6 +73,5 @@ public class MergeSort {
             k++;
             i++;
         }
-
     }
 }

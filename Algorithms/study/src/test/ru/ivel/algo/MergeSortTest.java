@@ -13,9 +13,9 @@ public class MergeSortTest {
 
 	private int[] numbers;
 
-	private final static int SIZE = 7;
+	private final static int SIZE = 70;
 
-	private final static int MAX = 20;
+	private final static int MAX = 200;
 
 	@Before
 	public void setUp() throws Exception {
@@ -28,12 +28,12 @@ public class MergeSortTest {
 
 	@Test
 	public void testMergeSort() {
-		long startTime = System.currentTimeMillis();
+		long startTime = System.nanoTime();
 
 		MergeSort sorter = new MergeSort();
 		sorter.sort(numbers);
 
-		long stopTime = System.currentTimeMillis();
+		long stopTime = System.nanoTime();
 		long elapsedTime = stopTime - startTime;
 		System.out.println("MergeSort " + elapsedTime);
 
@@ -43,29 +43,27 @@ public class MergeSortTest {
 			}
 		}
 		assertTrue(true);
-
 	}
 
-	@Test
-	public void testMine() {
-		long startTime = System.currentTimeMillis();
+    @Test
+    public void testIterativeMergeSort() {
+        long startTime = System.nanoTime();
 
-		numbers = new int[] { 3, 3, 3, 1, 1, 1, 1};
-		MergeSort sorter = new MergeSort();
-		sorter.sort(numbers);
+        MergeSort sorter = new MergeSort();
+        sorter.itersort(numbers);
 
-		long stopTime = System.currentTimeMillis();
-		long elapsedTime = stopTime - startTime;
-		System.out.println("MergeSort " + elapsedTime);
+        long stopTime = System.nanoTime();
+        long elapsedTime = stopTime - startTime;
+        System.out.println("Iterative MergeSort " + elapsedTime);
 
-		for (int i = 0; i < numbers.length - 1; i++) {
-			if (numbers[i] > numbers[i + 1]) {
-				fail("Should not happen");
-			}
-		}
-		assertTrue(true);
+        for (int i = 0; i < numbers.length - 1; i++) {
+            if (numbers[i] > numbers[i + 1]) {
+                fail("Should not happen");
+            }
+        }
+        assertTrue(true);
 
-	}
+    }
 
 	@Test
 	public void itWorksRepeatably() {
@@ -88,9 +86,9 @@ public class MergeSortTest {
 
 	@Test
 	public void testStandardSort() {
-		long startTime = System.currentTimeMillis();
+		long startTime = System.nanoTime();
 		Arrays.sort(numbers);
-		long stopTime = System.currentTimeMillis();
+		long stopTime = System.nanoTime();
 		long elapsedTime = stopTime - startTime;
 		System.out.println("Standard Java sort " + elapsedTime);
 
