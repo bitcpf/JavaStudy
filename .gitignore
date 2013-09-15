@@ -243,3 +243,6 @@ target
 *.jar
 *.war
 *.ear
+
+# Repo specific
+algs4-data/
