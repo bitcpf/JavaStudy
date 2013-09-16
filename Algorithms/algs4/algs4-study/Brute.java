@@ -3,7 +3,6 @@ import java.util.Arrays;
 /**
  * Brute
  *
- * @author Игорь Елькин (ielkin@nvision-group.com)
  */
 public class Brute {
     public static void main(String[] args) {
