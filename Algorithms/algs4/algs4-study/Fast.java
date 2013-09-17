@@ -18,6 +18,9 @@ public class Fast {
         // Aux array for sorting on slope order
         Point[] aux = Arrays.copyOf(p, p.length);
 
+        // Array for printing out
+        Point[] print = new Point[p.length];
+
         // draw points
         for (Point point : p) {
             point.draw();
@@ -27,14 +30,14 @@ public class Fast {
         for (int i = 0; i < p.length - 3; i++) {
             // sort on the slope order
             Arrays.sort(aux, 0, aux.length, p[i].SLOPE_ORDER);
-            int start = 0;
+            int start = 1;
             double curSlope = p[i].slopeTo(aux[start]);
             for (int j = start + 1; j < aux.length; j++) {
                 double nextSlope = p[i].slopeTo(aux[j]);
                 if (curSlope != nextSlope) {
                     // segment found
                     if (j - start >= 3) {
-                        printSegment(p[i], aux, start, j);
+                        printSegment(p[i], aux, start, j, print);
                     }
                     start = j;
                     curSlope = nextSlope;
@@ -43,7 +46,7 @@ public class Fast {
             // check for segment that lasts till last point
             if (curSlope == p[i].slopeTo(aux[aux.length - 1])) {
                 if (aux.length - start >= 3) {
-                    printSegment(p[i], aux, start, aux.length);
+                    printSegment(p[i], aux, start, aux.length, print);
                 }
             }
         }
@@ -51,25 +54,24 @@ public class Fast {
        StdDraw.show(0);
     }
 
-    private static void printSegment(Point origin, Point[] aux, int start, int end) {
+    private static void printSegment(Point origin, Point[] aux, int start, int end, Point[] print) {
         // copy found points together with origin point into one array
-        Point[] temp = new Point[end - start + 1];
-        temp[0] = origin;
-        System.arraycopy(aux, start, temp, 1, end - start);
+        print[0] = origin;
+        System.arraycopy(aux, start, print, 1, end - start);
         // sort by coordinates
-        Arrays.sort(temp);
+        Arrays.sort(print, 0, end - start + 1);
         // to avoid subsegments printing - print only if origin is leftmost point.
-        if (temp[0] != origin) return;
+        if (print[0] != origin) return;
         // print segment
-        for (int i = 0; i < temp.length; i++) {
-            StdOut.print(temp[i]);
-            if (i < temp.length - 1)
+        for (int i = 0; i < end - start + 1; i++) {
+            StdOut.print(print[i]);
+            if (i < end - start)
                 StdOut.print(" -> ");
             else
                 StdOut.println();
         }
         // draw segment
-        temp[0].drawTo(temp[temp.length - 1]);
+        print[0].drawTo(print[end - start]);
     }
 
     private static Point[] readPoints(String inputFile) {
