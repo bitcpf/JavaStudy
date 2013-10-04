@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public class Board {
 
-    private final int[][] tiles;
+    private final short[][] tiles;
     private final int N;
     private int hamming = -1;
     private int manhattan = -1;
@@ -16,8 +16,18 @@ public class Board {
     // (where blocks[i][j] = block in row i, column j)
     public Board(int[][] blocks) {
         this.N = blocks.length;
-        this.tiles = new int[N][N];
-        for (int i = 0; i < blocks.length; i++) {
+        this.tiles = new short[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                tiles[i][j] = (short) blocks[i][j];
+            }
+        }
+    }
+
+    private Board(short[][] blocks) {
+        this.N = blocks.length;
+        this.tiles = new short[N][N];
+        for (int i = 0; i < N; i++) {
             System.arraycopy(blocks[i], 0, tiles[i], 0, N);
         }
     }
@@ -29,7 +39,7 @@ public class Board {
 
     // number of blocks out of place
     public int hamming() {
-        if(hamming != -1) return hamming;
+        if (hamming != -1) return hamming;
         int result = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
@@ -46,11 +56,11 @@ public class Board {
 
     // sum of Manhattan distances between blocks and goal
     public int manhattan() {
-        if(manhattan != -1) return manhattan;
+        if (manhattan != -1) return manhattan;
         int result = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (!(i == N - 1 && j == N - 1)) {
+                if (tiles[i][j] != 0) {
                     int val = tiles[i][j];
                     int goalI = (val - 1) / N;
                     int goalJ = (val - 1) % N;
@@ -83,16 +93,16 @@ public class Board {
 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N - 1; j++) {
-                if(twin.tiles[i][j] != 0 && twin.tiles[i][j+1] != 0) {
+                if (twin.tiles[i][j] != 0 && twin.tiles[i][j+1] != 0) {
                    // exchange tiles
-                    int tmp = twin.tiles[i][j];
+                    short tmp = twin.tiles[i][j];
                     twin.tiles[i][j] = twin.tiles[i][j+1];
                     twin.tiles[i][j+1] = tmp;
-                    break;
+                    return twin;
                 }
             }
         }
-        return twin;
+        return null;
     }
 
     // does this board equal y?
@@ -113,7 +123,7 @@ public class Board {
         int emptyJ = -1;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if(tiles[i][j] == 0) {
+                if (tiles[i][j] == 0) {
                     emptyI = i;
                     emptyJ = j;
                     break;
@@ -121,25 +131,25 @@ public class Board {
             }
         }
 
-        if(emptyI > 0) {
+        if (emptyI > 0) {
             Board b = new Board(tiles);
             b.tiles[emptyI][emptyJ] = b.tiles[emptyI - 1][emptyJ];
             b.tiles[emptyI - 1][emptyJ] = 0;
             result.enqueue(b);
         }
-        if(emptyI < N - 1) {
+        if (emptyI < N - 1) {
             Board b = new Board(tiles);
             b.tiles[emptyI][emptyJ] = b.tiles[emptyI + 1][emptyJ];
             b.tiles[emptyI + 1][emptyJ] = 0;
             result.enqueue(b);
         }
-        if(emptyJ > 0) {
+        if (emptyJ > 0) {
             Board b = new Board(tiles);
             b.tiles[emptyI][emptyJ] = b.tiles[emptyI][emptyJ - 1];
             b.tiles[emptyI][emptyJ - 1] = 0;
             result.enqueue(b);
         }
-        if(emptyJ < N - 1) {
+        if (emptyJ < N - 1) {
             Board b = new Board(tiles);
             b.tiles[emptyI][emptyJ] = b.tiles[emptyI][emptyJ + 1];
             b.tiles[emptyI][emptyJ + 1] = 0;

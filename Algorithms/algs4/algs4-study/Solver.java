@@ -5,14 +5,14 @@
  */
 public class Solver {
 
-    private Node last;
     private boolean solvable;
     private int moves = -1;
+    private Stack<Board> solution;
 
     private static class Node implements Comparable<Node> {
-        Board board;
-        Node prev;
-        int moves;
+        private Board board;
+        private Node prev;
+        private int moves;
 
         private Node(Board board, Node prev, int moves) {
             this.board = board;
@@ -21,10 +21,12 @@ public class Solver {
         }
 
         public int compareTo(Node that) {
-            if(this == that) return 0;
-            if(this.board.manhattan() > that.board.manhattan()) {
+            if (this == that) return 0;
+            if (this.board.manhattan() + this.moves
+                    > that.board.manhattan() + that.moves) {
                 return 1;
-            } else if(this.board.manhattan() < that.board.manhattan()) {
+            } else if (this.board.manhattan() + this.moves
+                    < that.board.manhattan() + that.moves) {
                 return -1;
             }
             return 0;
@@ -33,6 +35,7 @@ public class Solver {
 
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
+        // prepare queues
         Board twin = initial.twin();
         MinPQ<Node> pq = new MinPQ<Node>();
         Node node = new Node(initial, null, 0);
@@ -42,31 +45,40 @@ public class Solver {
         Node twinNode = new Node(twin, null, 0);
         twinPQ.insert(twinNode);
 
+        // find solution
         int count = 0;
         do {
             count++;
             node = pq.delMin();
             for (Board neighbor : node.board.neighbors()) {
-                if(node.prev == null || !neighbor.equals(node.prev.board)) {
-                    pq.insert(new Node(neighbor, node, count));
+                if ((node.prev == null) || !neighbor.equals(node.prev.board)) {
+                    pq.insert(new Node(neighbor, node, node.moves + 1));
                 }
             }
 
             twinNode = twinPQ.delMin();
             for (Board neighbor : twinNode.board.neighbors()) {
-                if(node.prev == null || !neighbor.equals(twinNode.prev.board)) {
-                    twinPQ.insert(new Node(neighbor, twinNode, count));
+                if ((twinNode.prev == null)
+                        || !neighbor.equals(twinNode.prev.board)) {
+                    twinPQ.insert(new Node(neighbor, twinNode, twinNode.moves + 1));
                 }
             }
         } while(!node.board.isGoal() && !twinNode.board.isGoal());
 
-        if(node.board.isGoal()) {
-            moves = count;
-            last = node;
+        // reconstruct solution
+        if (node.board.isGoal()) {
             solvable = true;
+            moves = 0;
+            solution = new Stack<Board>();
+            Node cur = node;
+            while (cur != null) {
+                solution.push(cur.board);
+                moves++;
+                cur = cur.prev;
+            }
+            moves--;
         } else {
             moves = -1;
-            last = null;
             solvable = false;
         }
     }
@@ -83,13 +95,6 @@ public class Solver {
 
     // sequence of boards in a shortest solution; null if no solution
     public Iterable<Board> solution() {
-        if(last == null) return null;
-        Stack<Board> solution = new Stack<Board>();
-        Node cur = last;
-        while(cur != null) {
-            solution.push(cur.board);
-            cur = cur.prev;
-        }
         return solution;
     }
 
@@ -103,14 +108,6 @@ public class Solver {
             for (int j = 0; j < N; j++)
                 blocks[i][j] = in.readInt();
         Board initial = new Board(blocks);
-
-        System.out.println(initial);
-        System.out.println("M:" + initial.manhattan() +", H:" + initial.hamming());
-        System.out.println(initial.twin());
-        System.out.println("Neighbours:");
-        for (Board board : initial.neighbors()) {
-            System.out.println(board);
-        }
 
         // solve the puzzle
         Solver solver = new Solver(initial);
